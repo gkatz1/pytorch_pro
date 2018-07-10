@@ -7,7 +7,7 @@ import torchvision.transforms as transforms
 
 
 # Device configuration
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+device = torch.cuda.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 # Hyper parameters
 num_epochs = 5
@@ -57,7 +57,7 @@ class ConvNet(nn.Module):
         out = self.fc(out)
         return out
 
-model = ConvNet(num_classes).to(device)
+model = ConvNet(num_classes).cuda(device)
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()
