@@ -12,16 +12,16 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 # Hyper parameters
 num_epochs = 5
 num_classes = 10
-batch_size = 100
+batch_size = 128
 learning_rate = 0.001
 
 # MNIST dataset
-train_dataset = torchvision.datasets.MNIST(root='../../data/',
+train_dataset = torchvision.datasets.CIFAR10(root='../../cifar10_data/',
                                            train=True, 
                                            transform=transforms.ToTensor(),
                                            download=True)
 
-test_dataset = torchvision.datasets.MNIST(root='../../data/',
+test_dataset = torchvision.datasets.CIFAR10(root='../../cifar10_data/',
                                           train=False, 
                                           transform=transforms.ToTensor())
 
@@ -39,7 +39,7 @@ class ConvNet(nn.Module):
     def __init__(self, num_classes=10):
         super(ConvNet, self).__init__()
         self.layer1 = nn.Sequential(
-            nn.Conv2d(1, 16, kernel_size=5, stride=1, padding=2),
+            nn.Conv2d(3, 16, kernel_size=5, stride=1, padding=2),
             nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
@@ -57,8 +57,6 @@ class ConvNet(nn.Module):
         out = self.fc(out)
         return out
 
-print('[#] DEBUG: 1')
-# model = ConvNet(num_classes).cuda(device=0)
 model = ConvNet(num_classes).to(device)
 
 # Loss and optimizer
@@ -67,7 +65,6 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 # Train the model
 total_step = len(train_loader)
-print('[#] DEBUG: 2')
 for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):
         images = images.to(device)
